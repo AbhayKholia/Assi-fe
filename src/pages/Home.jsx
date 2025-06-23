@@ -117,6 +117,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { post } from '../services/ApiEndpoint';
 import { Logout } from '../redux/AuthSlice';
+import Admin from './Admin';
+import Basic from './Basic';
 
 const Home = () => {
   const user = useSelector((state) => state.Auth.user);
@@ -164,7 +166,7 @@ const Home = () => {
       <Box sx={{ p: 4 }}>
         <Typography variant="h4">Dashboard</Typography>
         <Typography variant="body1" mt={2}>
-          Please select a section from the navigation bar.
+      <Basic/>
         </Typography>
       </Box>
     </>

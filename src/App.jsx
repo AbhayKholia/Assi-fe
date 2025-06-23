@@ -137,14 +137,12 @@ import Expenses from "./pages/Expenses";
 import Investment from "./pages/Investment";
 import FinancialPlanning from "./pages/FinancialPlanning";
 import InvestmentMatrix from "./pages/InvestmentMatrix";
-import BackButton from "./pages/BackButton";
 
 const App = () => {
   return (
     <>
       <BrowserRouter>
         <Toaster position="top-center" reverseOrder={false} />
-        <BackButton/>
         <Routes>
           {/* Public Auth Routes */}
           <Route element={<PublicLayouts />}>

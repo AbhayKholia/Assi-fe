@@ -1,73 +1,68 @@
-// import 
-
-import React, { useEffect, useState } from "react";
-import { get, del } from "../services/ApiEndpoint";
+import React, { useEffect, useState } from 'react';
+import { deleteUser, get } from '../services/ApiEndpoint';
+import { toast } from 'react-hot-toast';
 import {
-  Button,
+  Container,
   Typography,
-  Paper,
   Table,
+  TableBody,
+  TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
-  Box,
-} from "@mui/material";
-import toast from "react-hot-toast";
+  Paper,
+  Button
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Add to imports
 
-const Admin = () => {
+export default function Admin() {
   const [users, setUsers] = useState([]);
-
-  // Fetch all users from backend
-  const fetchUsers = async () => {
-    try {
-      const res = await get("/api/admin/getUser");
-      setUsers(res.data.users);
-    } catch (error) {
-      toast.error("Failed to load users");
-      console.error(error);
-    }
-  };
+const navigate = useNavigate(); // Inside your component function
 
   useEffect(() => {
-    fetchUsers();
+    const GetUsers = async () => {
+      try {
+        const request = await get('/api/admin/getuser');
+        if (request.status === 200) {
+          setUsers(request.data.users);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    GetUsers();
   }, []);
 
-  // Handle Delete
-  const handleDelete = async (userId, role) => {
-    if (role === "admin") {
-      toast.error("You cannot delete admin users.");
-      return;
-    }
-
-    const confirmed = window.confirm("Are you sure you want to delete this user?");
-    if (!confirmed) return;
-
+  const handleDelete = async (id) => {
     try {
-      const res = await del(`/api/admin/delet/${userId}`);
-      toast.success(res.data.message || "User deleted successfully");
-      fetchUsers(); // refresh table
-    } catch (err) {
-      const msg = err.response?.data?.message || "Failed to delete user";
-      toast.error(msg);
-      console.error(err);
+      const request = await deleteUser(`/api/admin/delet/${id}`);
+      if (request.status === 200) {
+        toast.success(request.data.message);
+        setUsers(users.filter(user => user._id !== id));
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };
 
   return (
-    <Box p={3}>
-      <Typography variant="h5" gutterBottom>
-        👥 Manage Users
-      </Typography>
+      <Container maxWidth="md" sx={{ mt: 4 }}>
+    <Button
+      variant="outlined"
+      onClick={() => navigate('/')}
+      sx={{ mb: 2 }}
+    >
+      Back
+    </Button>
+      <Typography variant="h4" gutterBottom>Manage Users</Typography>
 
-      <Paper elevation={3}>
+      <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3 }}>
         <Table>
-          <TableHead>
+          <TableHead sx={{ backgroundColor: '#1976d2' }}>
             <TableRow>
-              <TableCell><strong>Name</strong></TableCell>
-              <TableCell><strong>Email</strong></TableCell>
-              <TableCell><strong>Role</strong></TableCell>
-              <TableCell><strong>Action</strong></TableCell>
+              <TableCell sx={{ color: 'white' }}>Name</TableCell>
+              <TableCell sx={{ color: 'white' }}>Email</TableCell>
+              <TableCell sx={{ color: 'white' }}>Action</TableCell>
             </TableRow>
           </TableHead>
 
@@ -75,15 +70,13 @@ const Admin = () => {
             {users.length > 0 ? (
               users.map((user) => (
                 <TableRow key={user._id}>
-                  <TableCell>{user.name || "N/A"}</TableCell>
+                  <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role}</TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
                       color="error"
-                      size="small"
-                      onClick={() => handleDelete(user._id, user.role)}
+                      onClick={() => handleDelete(user._id)}
                     >
                       Delete
                     </Button>
@@ -92,14 +85,14 @@ const Admin = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4}>No users found</TableCell>
+                <TableCell colSpan={3} align="center">
+                  No users found
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-      </Paper>
-    </Box>
+      </TableContainer>
+    </Container>
   );
-};
-
-export default Admin;
+}

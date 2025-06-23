@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import { post } from '../services/ApiEndpoint';
-import BackButton from './BackButton';
 
 const Expenses = () => {
   const [monthlyExpenses, setMonthlyExpenses] = useState([
@@ -52,7 +51,6 @@ const Expenses = () => {
 
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', mt: 4, p: 2 }}>
-      <BackButton />
       <Typography variant="h4" gutterBottom>
         Expenses Form
       </Typography>

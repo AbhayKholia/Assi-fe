@@ -1,47 +1,65 @@
+// import React from 'react'
+// import axios from 'axios'
+// import { data } from 'react-router-dom'
 
 
-import axios from 'axios';
+// const instance = axios.create({
+//     baseURL:'http://localhost:4000',
+//     header:{
+//         'Content-Type': 'application/json'
+//     }
+// })
+// export const  get=(url,params) = instance.get(url,{params})
+// export const  post=(url,data) = instance.post(url,data)
+// export const  put=(url,data) = instance.put(url,data)
+// export const  delet=(url) = instance.delete(url)
 
-// Axios instance setup
+
+// instance.interceptors.request.use(function (config) {
+//     return config;
+//   }, function (error) {
+//     return Promise.reject(error);
+//   });
+
+
+// instance.interceptors.response.use(function (response) {
+//     console.log("Interceptor Reponse" , response)
+//     return response;
+//   }, function (error) {
+//         console.log("Interceptor Reponse" , error)
+
+//     return Promise.reject(error);
+//   });
+
+import axios from 'axios'
+
 const instance = axios.create({
-baseURL: 'https://assign-tqb8.onrender.com', 
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  withCredentials:true
-});
+    baseURL:'http://localhost:4000',
+    headers:{
+        'Content-Type': 'application/json'
+    },
+    withCredentials:true
+})
 
-// Wrapper methods
 export const get = (url, params) => instance.get(url, { params });
 export const post = (url, data) => instance.post(url, data);
 export const put = (url, data) => instance.put(url, data);
-export const del = async (url) => {
-  const token = localStorage.getItem("token");
-  return await instance.delete(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
+export const deleteUser = (url) => instance.delete(url);
 
-// Request interceptor
-instance.interceptors.request.use(
-  function (config) {
+
+  instance.interceptors.request.use(function (config) {
+    // Do something before request is sent
     return config;
-  },
-  function (error) {
+  }, function (error) {
+    // Do something with request error
     return Promise.reject(error);
-  }
-);
+  });
 
-// Response interceptor
-instance.interceptors.response.use(
-  function (response) {
-    console.log("Interceptor Response", response);
+// Add a response interceptor
+instance.interceptors.response.use(function (response) {
+        console.log('intercpert reponse',response)
     return response;
-  },
-  function (error) {
-    console.log("Interceptor Error", error);
+  }, function (error) {
+    console.log('intercpert reponse',error)
     return Promise.reject(error);
-  }
-);
+  });
